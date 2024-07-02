@@ -3,8 +3,11 @@ import 'package:ohms_law/util/misc/units.dart';
 
 //TODO need to add for power calculation
 
-
-
+/// Return the long name for unit
+///      V: "Voltage"
+///      A: 'Current'
+///      R: "Resistance"'
+///      W: "Power"
 String getLabel({required PositionRow position, required UnitType unitType}) {
   if (position == PositionRow.first) {
     if (unitType == UnitType.A || unitType == UnitType.R) {
@@ -23,6 +26,16 @@ String getLabel({required PositionRow position, required UnitType unitType}) {
   return "Value";
 }
 
+/// Generate a list for dropdown menu
+/// For example:
+///    "pV",
+//     "nV",
+//     "uV",
+//     "mV",
+//     "V",
+//     "kV",
+//     "MV",
+//     "GV"
 List<String> getSuffix(
     {required PositionRow position, required UnitType unitType}) {
   String letter = "";
@@ -49,6 +62,6 @@ List<String> getSuffix(
       )
       .toList();
 
-  print("la lista; $listSuffix");
+  //print("the list: $listSuffix");
   return listSuffix;
 }

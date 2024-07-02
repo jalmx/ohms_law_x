@@ -1,8 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ohms_law/providers/ohm_model.dart';
 import 'package:ohms_law/util/helpers/set_input_data.dart';
 import 'package:provider/provider.dart';
+
+import '../util/helpers/log.dart';
 
 enum PositionRow { first, second }
 
@@ -30,6 +31,22 @@ class _InputDataWidgetState extends State<InputDataWidget> {
     super.dispose();
   }
 
+  void showMessageErrorFormat() {
+    showDialog(
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: const Text('Just numbers'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+      context: context,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,15 +63,21 @@ class _InputDataWidgetState extends State<InputDataWidget> {
                   child: TextField(
                       controller: _controller,
                       onChanged: (String value) {
-                        if (kDebugMode) {
-                          print(value);
-                        }
-                        if(widget.position == PositionRow.first) {
-                          ohmModel.valueFirst = num.parse(value);
-                        } else {
-                          ohmModel.valueSecond =  num.parse(value);
-                        }
+                        Log.i(value);
+                        final hasInvalidValue =
+                            value.contains((RegExp(r'[A-Za-z]')));
+                        //print(value.allMatches(r".s").length);
+                        //TODO: check if have double dot
 
+                        if (hasInvalidValue) {
+                          showMessageErrorFormat();
+                        } else {
+                          if (widget.position == PositionRow.first ) {
+                            ohmModel.valueFirst = num.parse(value);
+                          } else {
+                            ohmModel.valueSecond = num.parse(value);
+                          }
+                        }
                       },
                       maxLines: 1,
                       autocorrect: false,
@@ -80,9 +103,9 @@ class _InputDataWidgetState extends State<InputDataWidget> {
                     value: widget.position == PositionRow.first
                         ? ohmModel.suffixFirst
                         : ohmModel.suffixSecond,
-                    items: getSuffix(
-                            position: widget.position,
-                            unitType: ohmModel.operation)
+                    items: (widget.position == PositionRow.first
+                            ? ohmModel.listOptionsFirst
+                            : ohmModel.listOptionsSecond)
                         .map<DropdownMenuItem<String>>(
                       (item) {
                         return DropdownMenuItem(
@@ -93,10 +116,8 @@ class _InputDataWidgetState extends State<InputDataWidget> {
                     ).toList(),
                     onChanged: (String? value) {
                       setState(() {
-                        if (kDebugMode) {
-                          print(value);
-                        }
-                        if(widget.position == PositionRow.first) {
+                        Log.i("dropdown list: $value");
+                        if (widget.position == PositionRow.first) {
                           ohmModel.suffixFirst = value!;
                         } else {
                           ohmModel.suffixSecond = value!;

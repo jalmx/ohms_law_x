@@ -11,6 +11,7 @@ class MenuActions extends StatelessWidget {
       padding: const EdgeInsets.only(right: 8),
       child: IconButton(
         onPressed: () {
+          //TODO: limpiar la pantalla
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Sin implementar")));
         },

@@ -20,13 +20,12 @@ class MyApp extends StatelessWidget {
             "Ohms Law X",
             style: TextStyle(color: Colors.white),
           ),
-          // ignore: prefer_const_literals_to_create_immutables
-          actions: <Widget>[
-            const MenuActions()
+          actions: const <Widget>[
+            MenuActions()
           ],
           backgroundColor: Colors.red,
         ),
-        body: const HomeWidget(),
+        body: const HomeWidget()
       ),
     );
   }
