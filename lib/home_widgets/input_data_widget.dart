@@ -17,17 +17,8 @@ class InputDataWidget extends StatefulWidget {
 }
 
 class _InputDataWidgetState extends State<InputDataWidget> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -61,18 +52,17 @@ class _InputDataWidgetState extends State<InputDataWidget> {
                 Expanded(
                   flex: 3,
                   child: TextField(
-                      controller: _controller,
+                      controller: widget.position == PositionRow.first
+                          ? ohmModel.controllerFirst
+                          : ohmModel.controllerSecond,
                       onChanged: (String value) {
-                        Log.i(value);
                         final hasInvalidValue =
                             value.contains((RegExp(r'[A-Za-z]')));
-                        //print(value.allMatches(r".s").length);
-                        //TODO: check if have double dot
 
                         if (hasInvalidValue) {
                           showMessageErrorFormat();
                         } else {
-                          if (widget.position == PositionRow.first ) {
+                          if (widget.position == PositionRow.first) {
                             ohmModel.valueFirst = num.parse(value);
                           } else {
                             ohmModel.valueSecond = num.parse(value);

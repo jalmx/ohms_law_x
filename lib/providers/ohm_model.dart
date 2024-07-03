@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ohms_law/util/helpers/log.dart';
 import 'package:ohms_law/util/misc/units.dart';
 import 'package:ohms_law/util/ohms/current.dart';
 import 'package:ohms_law/util/ohms/power.dart';
@@ -7,44 +7,70 @@ import 'package:ohms_law/util/ohms/resistance.dart';
 import 'package:ohms_law/util/ohms/voltage.dart';
 
 class OhmModel extends ChangeNotifier {
-  UnitType _operation = UnitType.A;
-  bool _activatePower = false;
+  late UnitType _operation;
+  late bool _activatePower;
+  late num _valueFirst;
+  late num _valueSecond;
+  late String _suffixFirst;
+  late String _suffixSecond;
+  late List<String> _listOptionsRowFirst;
+  late List<String> _listOptionsRowSecond;
+  late ResultValue _resultMini;
+  late ResultValue _result;
+  late TextEditingController _controllerFirst;
+  late TextEditingController _controllerSecond;
 
-  num _valueFirst = 0.0;
-  num _valueSecond = 0.0;
+  OhmModel() {
+    _initValues();
+  }
 
-  String _suffixFirst = "V";
-  String _suffixSecond = "Ω";
+  void _initValues() {
+    _operation = UnitType.A;
+    _activatePower = false;
+    _valueFirst = 0.0;
+    _valueSecond = 0.0;
+    _suffixFirst = Unit.getUnitLetterString()[UnitType.V]!;
+    _suffixSecond = Unit.getUnitLetterString()[UnitType.R]!;
+    _listOptionsRowFirst = [
+      "pV",
+      "nV",
+      "uV",
+      "mV",
+      "V",
+      "kV",
+      "MV",
+      "GV",
+    ];
+    _listOptionsRowSecond = [
+      "pΩ",
+      "nΩ",
+      "uΩ",
+      "mΩ",
+      "Ω",
+      "kΩ",
+      "MΩ",
+      "GΩ",
+    ];
 
-  List<String> _listOptionsRowFirst = [
-    "pV",
-    "nV",
-    "uV",
-    "mV",
-    "V",
-    "kV",
-    "MV",
-    "GV"
-  ];
-  List<String> _listOptionsRowSecond = [
-    "pΩ",
-    "nΩ",
-    "uΩ",
-    "mΩ",
-    "Ω",
-    "kΩ",
-    "MΩ",
-    "GΩ"
-  ];
+    _resultMini = ResultValue(valueRaw: 0);
+    _result = ResultValue(valueRaw: 0);
+     _controllerFirst = TextEditingController();
+     _controllerSecond = TextEditingController();
+  }
 
-  ResultValue _resultMini = ResultValue(valueRaw: 0);
-  ResultValue _result = ResultValue(valueRaw: 0);
-
+  void clear(){
+    _initValues();
+    _controllerFirst.clear();
+    _controllerSecond.clear();
+    notifyListeners();
+  }
   set result(ResultValue value) {
     _result = value;
     notifyListeners();
   }
 
+  TextEditingController get controllerFirst => _controllerFirst;
+  TextEditingController get controllerSecond => _controllerSecond;
   ResultValue get result => _result;
 
   set resultMini(ResultValue value) {
@@ -86,14 +112,12 @@ class OhmModel extends ChangeNotifier {
 
   set suffixFirst(String value) {
     _suffixFirst = value;
-    Log.i("change suffix FIRST: $_suffixFirst");
     _calculate();
     notifyListeners();
   }
 
   set suffixSecond(String value) {
     _suffixSecond = value;
-    Log.i("change suffix SECOND: $_suffixSecond");
     _calculate();
     notifyListeners();
   }

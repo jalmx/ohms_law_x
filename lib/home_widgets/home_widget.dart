@@ -14,22 +14,19 @@ class HomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => OhmModel(),
-      child: const Column(
-        children: <Widget>[
-          TitleWidget(),
-          OptionsWidget(),
-          InputDataWidget(
-            position: PositionRow.first,
-          ),
-          InputDataWidget(
-            position: PositionRow.second,
-          ),
-          OptionSecond(),
-          ResultWidget(),
-        ],
-      ),
+    return const Column(
+      children: <Widget>[
+        TitleWidget(),
+        OptionsWidget(),
+        InputDataWidget(
+          position: PositionRow.first,
+        ),
+        InputDataWidget(
+          position: PositionRow.second,
+        ),
+        OptionSecond(),
+        ResultWidget(),
+      ],
     );
   }
 }
