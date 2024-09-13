@@ -12,8 +12,6 @@ class OptionSecond extends StatefulWidget {
 }
 
 class _OptionSecondState extends State<OptionSecond> {
-  bool status = false;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<OhmModel>(
@@ -28,11 +26,11 @@ class _OptionSecondState extends State<OptionSecond> {
                     ),
                   ),
                   Switch(
-                    value: status,
+                    value: ohmModel.isSecondOption,
                     onChanged: (bool value) {
                       setState(
                         () {
-                          status = value;
+                          ohmModel.isSecondOption = value;
                         },
                       );
                     },

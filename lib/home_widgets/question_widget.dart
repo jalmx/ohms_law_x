@@ -12,8 +12,6 @@ class TitleWidget extends StatefulWidget {
 }
 
 class _TitleWidgetState extends State<TitleWidget> {
-  bool status = false;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,13 +30,13 @@ class _TitleWidgetState extends State<TitleWidget> {
             children: [
               const Text("Power"),
               Consumer<OhmModel>(
-                builder: (BuildContext context, OhmModel ohmModel, Widget? child) {
+                builder:
+                    (BuildContext context, OhmModel ohmModel, Widget? child) {
                   return Switch(
-                    value: status,
+                    value: ohmModel.isPower,
                     activeColor: Colors.red,
                     onChanged: (bool value) {
                       setState(() {
-                        status = value;
                         ohmModel.isPower = value;
                       });
                     },

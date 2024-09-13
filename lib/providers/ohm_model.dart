@@ -1,14 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ohms_law/util/misc/units.dart';
-import 'package:ohms_law/util/ohms/current.dart';
-import 'package:ohms_law/util/ohms/power.dart';
-import 'package:ohms_law/util/ohms/resistance.dart';
-import 'package:ohms_law/util/ohms/voltage.dart';
+import 'package:ohms_law/home_widgets/input_data_widget.dart';
+import 'package:ohms_law/util/entity/law/unit.dart';
+import 'package:ohms_law/util/entity/passive/voltage.dart';
+import 'package:ohms_law/util/helpers/set_input_data.dart';
+import 'package:ohms_law/util/entity/suffix.dart';
+
+import '../util/entity/law/current.dart.old';
+import '../util/entity/law/power.dart.old';
+import '../util/entity/law/resistance.dart';
+import '../util/entity/law/voltage.dart.old';
+import '../util/entity/result_value.dart';
+import '../util/entity/suffix.dart';
 
 class OhmModel extends ChangeNotifier {
   late UnitType _operation;
   late bool _activatePower;
+  late bool _secondOptionPower;
   late num _valueFirst;
   late num _valueSecond;
   late String _suffixFirst;
@@ -27,43 +35,33 @@ class OhmModel extends ChangeNotifier {
   void _initValues() {
     _operation = UnitType.A;
     _activatePower = false;
+    _secondOptionPower = false;
     _valueFirst = 0.0;
     _valueSecond = 0.0;
     _suffixFirst = Unit.getUnitLetterString()[UnitType.V]!;
     _suffixSecond = Unit.getUnitLetterString()[UnitType.R]!;
-    _listOptionsRowFirst = [
-      "pV",
-      "nV",
-      "uV",
-      "mV",
-      "V",
-      "kV",
-      "MV",
-      "GV",
-    ];
-    _listOptionsRowSecond = [
-      "pΩ",
-      "nΩ",
-      "uΩ",
-      "mΩ",
-      "Ω",
-      "kΩ",
-      "MΩ",
-      "GΩ",
-    ];
+    _listOptionsRowFirst =
+        getSuffix(position: PositionRow.first, unitType: _operation);
+    _listOptionsRowSecond =
+        getSuffix(position: PositionRow.second, unitType: _operation);
 
     _resultMini = ResultValue(valueRaw: 0);
     _result = ResultValue(valueRaw: 0);
-     _controllerFirst = TextEditingController();
-     _controllerSecond = TextEditingController();
+    _controllerFirst = TextEditingController();
+    _controllerSecond = TextEditingController();
   }
 
-  void clear(){
+  void clear() {
     _initValues();
-    _controllerFirst.clear();
-    _controllerSecond.clear();
+    clearInputs();
     notifyListeners();
   }
+
+  void clearInputs() {
+    _controllerFirst.clear();
+    _controllerSecond.clear();
+  }
+
   set result(ResultValue value) {
     _result = value;
     notifyListeners();
@@ -135,7 +133,14 @@ class OhmModel extends ChangeNotifier {
 
   String get unitLetter => Unit.getUnitLetterString()[_operation]!;
 
+  bool get isSecondOption => _secondOptionPower;
   bool get isPower => _activatePower;
+
+  set isSecondOption(bool status) {
+    _secondOptionPower = status;
+    _calculate();
+    notifyListeners();
+  }
 
   set isPower(bool status) {
     _activatePower = status;
@@ -143,80 +148,90 @@ class OhmModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Spit the string from dropdown list, for example get the value "mA" and extract "m"
-  Notation _getNotation(String notation) {
-    return Unit.getNotationValueWithStringMap()[notation.substring(0, 1)] ??
-        Notation.UNIT;
+  /// send and render result
+  void _renderResult(ResultValue resultMain, ResultValue resultSecond) {
+    result = resultMain;
+    resultMini = resultSecond;
   }
 
-  void _calculate() {
+  Future<void> _calculate() async {
+    /// Spit the string from dropdown list, for example get the value "mA" and extract "m"
+    Notation getNotation(String notation) {
+      return Suffix.getNotationValueWithStringMap()[notation.substring(0, 1)] ??
+          Notation.UNIT;
+    }
+
     num value = 0.0;
+    late ResultValue resultMain = ResultValue(valueRaw: 0);
+    late ResultValue resultSecond = ResultValue(valueRaw: 0);
 
     if (_operation == UnitType.A) {
-      value = Current.calculateCurrent(
-        voltage: ResultValue(
-                valueRaw: _valueFirst, notationBase: _getNotation(_suffixFirst))
-            .realValue,
-        resistance: ResultValue(
-                valueRaw: _valueSecond,
-                notationBase: _getNotation(_suffixSecond))
-            .realValue,
-      );
-      result = ResultValue(valueRaw: value);
-      value = Power.powerForCurrent(
-        voltage: ResultValue(
-                valueRaw: _valueFirst, notationBase: _getNotation(_suffixFirst))
-            .realValue,
-        resistance: ResultValue(
-                valueRaw: _valueSecond,
-                notationBase: _getNotation(_suffixSecond))
-            .realValue,
-      );
-      resultMini = ResultValue(valueRaw: value);
+      // value = Current.calculateCurrent(
+      //   voltage: ResultValue(
+      //           valueRaw: _valueFirst, notationBase: getNotation(_suffixFirst))
+      //       .realValue,
+      //   resistance: ResultValue(
+      //           valueRaw: _valueSecond,
+      //           notationBase: getNotation(_suffixSecond))
+      //       .realValue,
+      // );
+      // resultMain = ResultValue(valueRaw: value);
+      // value = Power.powerForCurrent(
+      //   voltage: ResultValue(
+      //           valueRaw: _valueFirst, notationBase: getNotation(_suffixFirst))
+      //       .realValue,
+      //   resistance: ResultValue(
+      //           valueRaw: _valueSecond,
+      //           notationBase: getNotation(_suffixSecond))
+      //       .realValue,
+      // );
+      // resultSecond = ResultValue(valueRaw: value);
     } else if (_operation == UnitType.V) {
-      value = Voltage.calculateVoltage(
-          current: ResultValue(
-                  valueRaw: _valueFirst,
-                  notationBase: _getNotation(_suffixFirst))
-              .realValue,
-          resistance: ResultValue(
-                  valueRaw: _valueSecond,
-                  notationBase: _getNotation(_suffixSecond))
-              .realValue);
-      result = ResultValue(valueRaw: value);
-
-      value = Power.powerForVoltage(
-        current: ResultValue(
-                valueRaw: _valueFirst, notationBase: _getNotation(_suffixFirst))
-            .realValue,
-        resistance: ResultValue(
-                valueRaw: _valueSecond,
-                notationBase: _getNotation(_suffixSecond))
-            .realValue,
-      );
-      resultMini = ResultValue(valueRaw: value);
+      // value = Voltage.calculateVoltage(
+      //     current: ResultValue(
+      //             valueRaw: _valueFirst,
+      //             notationBase: getNotation(_suffixFirst))
+      //         .realValue,
+      //     resistance: ResultValue(
+      //             valueRaw: _valueSecond,
+      //             notationBase: getNotation(_suffixSecond))
+      //         .realValue);
+      // resultMain = ResultValue(valueRaw: value);
+      //
+      // value = Power.powerForVoltage(
+      //   current: ResultValue(
+      //           valueRaw: _valueFirst, notationBase: getNotation(_suffixFirst))
+      //       .realValue,
+      //   resistance: ResultValue(
+      //           valueRaw: _valueSecond,
+      //           notationBase: getNotation(_suffixSecond))
+      //       .realValue,
+      // );
+      // resultSecond = ResultValue(valueRaw: value);
     } else if (_operation == UnitType.R) {
-      value = Resistance.calculateResistance(
-        voltage: ResultValue(
-                valueRaw: _valueFirst, notationBase: _getNotation(_suffixFirst))
-            .realValue,
-        current: ResultValue(
-                valueRaw: _valueSecond,
-                notationBase: _getNotation(_suffixSecond))
-            .realValue,
-      );
-      result = ResultValue(valueRaw: value);
-
-      value = Power.powerForResistance(
-          voltage: ResultValue(
-                  valueRaw: _valueFirst,
-                  notationBase: _getNotation(_suffixFirst))
-              .realValue,
-          current: ResultValue(
-                  valueRaw: _valueSecond,
-                  notationBase: _getNotation(_suffixSecond))
-              .realValue);
-      resultMini = ResultValue(valueRaw: value);
+      // value = ResistanceLaw.ohm(passive1: Voltage(value: value), passive2: passive2);
+      //   ResultValue(
+      //           valueRaw: _valueFirst, notationBase: getNotation(_suffixFirst))
+      //       .realValue,
+      //   current: ResultValue(
+      //           valueRaw: _valueSecond,
+      //           notationBase: getNotation(_suffixSecond))
+      //       .realValue,
+      // );
+      // resultMain = ResultValue(valueRaw: value);
+      //
+      // value = Power.powerForResistance(
+      //     voltage: ResultValue(
+      //             valueRaw: _valueFirst,
+      //             notationBase: getNotation(_suffixFirst))
+      //         .realValue,
+      //     current: ResultValue(
+      //             valueRaw: _valueSecond,
+      //             notationBase: getNotation(_suffixSecond))
+      //         .realValue);
+      // resultSecond = ResultValue(valueRaw: value);
     }
+
+    _renderResult(resultMain, resultSecond);
   }
 }

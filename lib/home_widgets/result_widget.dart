@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ohms_law/providers/ohm_model.dart';
+import 'package:ohms_law/util/entity/law/unit.dart';
 import 'package:provider/provider.dart';
 
-import '../util/misc/units.dart';
+import '../util/entity/result_value.dart';
 
 class ResultWidget extends StatefulWidget {
   const ResultWidget({super.key});
@@ -47,15 +48,16 @@ class _ResultWidgetState extends State<ResultWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Text(
-                      _fixFormat(
-                          result: ohmModel.resultMini, operation: UnitType.W),
-                      style: const TextStyle(fontSize: 24),
-                      overflow: TextOverflow.fade,
+                  if (!ohmModel.isPower)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(
+                        _fixFormat(
+                            result: ohmModel.resultMini, operation: UnitType.W),
+                        style: const TextStyle(fontSize: 24),
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
-                  ),
                   FittedBox(
                     fit: BoxFit.contain,
                     child: Text(

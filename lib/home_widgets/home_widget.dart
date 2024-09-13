@@ -4,8 +4,6 @@ import 'package:ohms_law/home_widgets/option_second.dart';
 import 'package:ohms_law/home_widgets/options_widget.dart';
 import 'package:ohms_law/home_widgets/question_widget.dart';
 import 'package:ohms_law/home_widgets/result_widget.dart';
-import 'package:ohms_law/providers/ohm_model.dart';
-import 'package:provider/provider.dart';
 
 class HomeWidget extends StatelessWidget {
   const HomeWidget({

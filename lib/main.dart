@@ -12,25 +12,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => OhmModel() ,
+      create: (BuildContext context) => OhmModel(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Ohms Law X',
         theme: getThemeData(),
         home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text(
-              "Ohms Law X",
-              style: TextStyle(color: Colors.white),
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text(
+                "Ohms Law X",
+                style: TextStyle(color: Colors.white),
+              ),
+              actions: const <Widget>[MenuActions()],
+              backgroundColor: Colors.red,
             ),
-            actions: const <Widget>[
-              MenuActions()
-            ],
-            backgroundColor: Colors.red,
-          ),
-          body: const HomeWidget()
-        ),
+            body: const HomeWidget()),
       ),
     );
   }

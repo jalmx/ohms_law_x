@@ -13,7 +13,8 @@ class MenuActions extends StatelessWidget {
       padding: const EdgeInsets.only(right: 8),
       child: Row(
         children: [
-          Consumer<OhmModel>(builder: (BuildContext context, OhmModel ohmModel, Widget? child) {
+          Consumer<OhmModel>(builder:
+              (BuildContext context, OhmModel ohmModel, Widget? child) {
             return IconButton(
                 onPressed: () {
                   ohmModel.clear();

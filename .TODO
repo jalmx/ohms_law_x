@@ -2,3 +2,14 @@
 
 - Add ico for all release apps
 - remove duplicates dot in inputs data
+- Add menu for launch another page
+    - for triangle ohm law
+    - For all formulas
+    - For about with links to copy
+
+
+ option A   V   R     A       V      R
+ power  0   0   0       W     W      W
+ =================================
+ input1 V   A   V       W       W      W
+ input2 Oh  R  A       R/V      A/R    V/A

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ohms_law/home_widgets/input_data_widget.dart';
 import 'package:ohms_law/providers/ohm_model.dart';
+import 'package:ohms_law/util/entity/law/unit.dart';
 import 'package:ohms_law/util/helpers/set_input_data.dart';
-import 'package:ohms_law/util/misc/units.dart';
+import 'package:ohms_law/util/entity/suffix.dart';
 import 'package:provider/provider.dart';
 
 class OptionsWidget extends StatefulWidget {
@@ -14,20 +14,6 @@ class OptionsWidget extends StatefulWidget {
 
 class _OptionsWidgetState extends State<OptionsWidget> {
   UnitType? _typeOhms = UnitType.A;
-
-  void setListOptionsToInputs({required OhmModel ohmModel}){
-    ohmModel.listOptionsFirst = getSuffix(
-      position: PositionRow.first,
-      unitType: ohmModel.operation,
-    );
-    ohmModel.suffixFirst = ohmModel.listOptionsFirst[4];
-
-    ohmModel.listOptionsSecond = getSuffix(
-      position: PositionRow.second,
-      unitType: ohmModel.operation,
-    );
-    ohmModel.suffixSecond = ohmModel.listOptionsSecond[4];
-  }
 
   @override
   Widget build(BuildContext context) {

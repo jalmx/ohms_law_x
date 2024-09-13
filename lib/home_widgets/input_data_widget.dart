@@ -58,7 +58,6 @@ class _InputDataWidgetState extends State<InputDataWidget> {
                       onChanged: (String value) {
                         final hasInvalidValue =
                             value.contains((RegExp(r'[A-Za-z]')));
-
                         if (hasInvalidValue) {
                           showMessageErrorFormat();
                         } else {
@@ -78,10 +77,11 @@ class _InputDataWidgetState extends State<InputDataWidget> {
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
+                        filled: ohmModel.isPower,
                         labelText: getLabel(
-                          position: widget.position,
-                          unitType: ohmModel.operation,
-                        ),
+                            position: widget.position,
+                            unitType: ohmModel.operation,
+                            isPower: ohmModel.isPower),
                       )),
                 ),
                 const SizedBox(
